@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Happy Holi - Ankku Dii </title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@700&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'Nunito', sans-serif;
+  background: #0a0a0a;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.page {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.8s ease;
+  z-index: 1;
+}
+.page.active { opacity: 1; pointer-events: all; z-index: 10; }
+canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+/* PAGE 1 */
+#page1 {
+  background: radial-gradient(ellipse at center, #1a0533 0%, #0a0a0a 70%);
+  flex-direction: column; text-align: center;
+}
+.splash-content { position: relative; z-index: 5; animation: splashIn 1s ease forwards; }
+@keyframes splashIn {
+  from { transform: scale(0.5) rotateY(90deg); opacity: 0; }
+  to { transform: scale(1) rotateY(0deg); opacity: 1; }
+}
+.holi-3d-text {
+  font-family: 'Pacifico', cursive;
+  font-size: clamp(48px, 12vw, 120px);
+  background: linear-gradient(135deg, #ff6b35, #f7c948, #e91e8c, #00d4ff, #7c4dff);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: colorFlow 3s ease infinite, textFloat 2s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 30px rgba(255,100,50,0.8));
+  line-height: 1.1;
+}
+@keyframes colorFlow {
+  0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; }
+}
+@keyframes textFloat {
+  from { transform: translateY(0px) rotateX(5deg); }
+  to { transform: translateY(-15px) rotateX(-5deg); }
+}
+.subtitle-3d {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(28px, 7vw, 72px);
+  color: #fff;
+  text-shadow: 0 0 20px #ff6bff, 0 0 40px #ff6bff, 2px 2px 0 #c2185b, 4px 4px 0 #880e4f;
+  animation: subtitlePulse 1.5s ease-in-out infinite alternate;
+  margin-top: 10px;
+}
+@keyframes subtitlePulse {
+  from { text-shadow: 0 0 20px #ff6bff, 2px 2px 0 #c2185b; transform: scale(1); }
+  to { text-shadow: 0 0 40px #fff, 0 0 80px #ff6bff, 2px 2px 0 #c2185b; transform: scale(1.03); }
+}
+.timer-circle {
+  width: 80px; height: 80px; border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.3);
+  margin: 30px auto 0;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.timer-circle::before {
+  content: ''; position: absolute; inset: -4px; border-radius: 50%;
+  border: 4px solid transparent; border-top-color: #ff6b35;
+  animation: timerSpin 3s linear forwards;
+}
+@keyframes timerSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.timer-num { font-size: 32px; font-weight: 900; color: #fff; }
+.powder-ring {
+  position: absolute; border-radius: 50%;
+  pointer-events: none; animation: powderBurst 3s ease-out infinite; opacity: 0;
+}
+@keyframes powderBurst { 0% { transform: scale(0); opacity: 0.8; } 100% { transform: scale(4); opacity: 0; } }
+
+/* PAGE 2 */
+#page2 { background: radial-gradient(ellipse at bottom, #1a0a2e 0%, #0d001a 100%); overflow: hidden; }
+.gate-scene { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.gate-frame { position: relative; width: min(380px, 90vw); height: min(500px, 85vh); z-index: 5; }
+.gate-arch {
+  position: absolute; width: 100%; height: 100%;
+  border: 6px solid;
+  border-image: linear-gradient(180deg, #ffd700, #ff6b35, #e91e8c, #7c4dff) 1;
+  border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+  box-shadow: 0 0 40px rgba(255,215,0,0.5), inset 0 0 40px rgba(255,107,53,0.2);
+}
+.gate-door-left, .gate-door-right {
+  position: absolute; width: 50%; height: 96%; top: 2%;
+  background: linear-gradient(135deg, #2d1b69 0%, #11114f 50%, #1a0a2e 100%);
+  border: 2px solid rgba(255,215,0,0.4); overflow: hidden;
+  transition: transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.gate-door-left { left: 0; transform-origin: left center; }
+.gate-door-right { right: 0; transform-origin: right center; }
+.gate-door-left.open { transform: rotateY(-85deg); }
+.gate-door-right.open { transform: rotateY(85deg); }
+.door-design { position: absolute; inset: 10px; border: 2px solid rgba(255,215,0,0.3); border-radius: 4px; }
+.door-design::before { content: '🌸'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 40px; opacity: 0.6; }
+.gate-welcome {
+  position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%);
+  text-align: center; width: 320px; opacity: 0; transition: opacity 1s ease 1.5s;
+}
+.gate-welcome.show { opacity: 1; }
+.gate-welcome h2 {
+  font-family: 'Dancing Script', cursive; font-size: clamp(22px, 5vw, 38px);
+  background: linear-gradient(135deg, #ffd700, #ff6b35);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.gate-btn {
+  margin-top: 20px; padding: 14px 40px;
+  background: linear-gradient(135deg, #ff6b35, #e91e8c, #7c4dff);
+  background-size: 200% 200%; animation: btnGlow 2s ease infinite;
+  border: none; border-radius: 50px; color: #fff; font-size: 18px; font-weight: 700;
+  cursor: pointer; font-family: 'Nunito', sans-serif; min-height: 48px;
+}
+@keyframes btnGlow {
+  0% { background-position: 0% 50%; box-shadow: 0 0 20px rgba(255,107,53,0.6); }
+  50% { background-position: 100% 50%; box-shadow: 0 0 40px rgba(233,30,140,0.8); }
+  100% { background-position: 0% 50%; box-shadow: 0 0 20px rgba(255,107,53,0.6); }
+}
+.float-flower { position: absolute; font-size: clamp(20px,4vw,36px); animation: floatUp linear infinite; pointer-events: none; }
+@keyframes floatUp {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-20vh) rotate(720deg); opacity: 0; }
+}
+.gate-top-text {
+  position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
+  font-family: 'Pacifico', cursive; font-size: clamp(16px,3.5vw,26px);
+  background: linear-gradient(90deg, #ffd700, #ff6b35, #e91e8c);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  white-space: nowrap; animation: shimmer 2s infinite;
+}
+@keyframes shimmer { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.5); } }
+
+/* PAGE 3 */
+#page3 {
+  background: #0a0010; flex-direction: column;
+  overflow-y: auto; align-items: center; justify-content: flex-start;
+  padding: 20px 16px 40px; -webkit-overflow-scrolling: touch;
+}
+.wish-container { max-width: 500px; width: 100%; z-index: 5; position: relative; }
+.sister-header { text-align: center; padding: 20px 0 10px; }
+
+/* DP AVATAR */
+.dp-wrapper {
+  width: 130px; height: 130px; border-radius: 50%;
+  margin: 0 auto 16px; position: relative;
+  animation: diiGlow 2s ease-in-out infinite alternate;
+}
+@keyframes diiGlow {
+  from { filter: drop-shadow(0 0 12px rgba(233,30,140,0.6)); transform: scale(1); }
+  to { filter: drop-shadow(0 0 28px rgba(124,77,255,1)); transform: scale(1.05); }
+}
+.dp-ring {
+  position: absolute; inset: -5px; border-radius: 50%;
+  background: conic-gradient(#ff6b35, #f7c948, #e91e8c, #7c4dff, #00d4ff, #00e676, #ff6b35);
+  animation: spinRing 3s linear infinite; z-index: 0;
+}
+@keyframes spinRing { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.dp-ring-mask {
+  position: absolute; inset: 4px; border-radius: 50%;
+  background: #0a0010; z-index: 1;
+}
+.dp-svg-container {
+  position: absolute; inset: 8px; border-radius: 50%;
+  overflow: hidden; z-index: 2;
+  background: linear-gradient(160deg, #2d1469, #1a0533);
+}
+.dp-svg-container svg { width: 100%; height: 100%; }
+
+.dii-title {
+  font-family: 'Pacifico', cursive; font-size: clamp(26px,7vw,52px);
+  background: linear-gradient(135deg, #ffd700, #ff6b35, #e91e8c, #7c4dff);
+  background-size: 300% 300%;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: colorFlow 3s ease infinite;
+}
+.dii-subtitle {
+  font-family: 'Dancing Script', cursive; font-size: clamp(18px,4.5vw,28px);
+  color: rgba(255,255,255,0.7); margin-top: 6px;
+}
+
+/* DHOL VISUALIZER */
+.dhol-visualizer {
+  display: flex; gap: 5px; align-items: flex-end;
+  justify-content: center; margin: 10px auto 4px;
+  height: 44px; width: 130px;
+}
+.dhol-bar {
+  width: 9px; border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(to top, #ff6b35, #e91e8c, #ffd700);
+  transform-origin: bottom;
+  animation: dholBar 0.35s ease-in-out infinite alternate;
+}
+.dhol-bar:nth-child(1){height:55%;animation-delay:0s;}
+.dhol-bar:nth-child(2){height:85%;animation-delay:0.07s;}
+.dhol-bar:nth-child(3){height:100%;animation-delay:0.14s;}
+.dhol-bar:nth-child(4){height:80%;animation-delay:0.07s;}
+.dhol-bar:nth-child(5){height:50%;animation-delay:0s;}
+@keyframes dholBar {
+  from { transform: scaleY(0.2); opacity: 0.4; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+.dhol-visualizer.paused .dhol-bar { animation-play-state: paused; transform: scaleY(0.3); }
+.dhol-label {
+  font-size: 11px; color: rgba(255,200,100,0.7);
+  text-align: center; letter-spacing: 2px; margin-bottom: 8px;
+}
+
+/* CARDS */
+.msg-card {
+  margin: 14px 0; padding: 20px 22px; border-radius: 20px;
+  position: relative; overflow: hidden;
+  animation: cardReveal 0.6s ease forwards;
+  opacity: 0; transform: translateY(30px);
+}
+.msg-card:nth-child(1){animation-delay:0.2s;} .msg-card:nth-child(2){animation-delay:0.4s;}
+.msg-card:nth-child(3){animation-delay:0.6s;} .msg-card:nth-child(4){animation-delay:0.8s;}
+@keyframes cardReveal { to { opacity: 1; transform: translateY(0); } }
+.msg-card::before {
+  content:''; position:absolute; inset:0; border-radius:20px; padding:2px;
+  background: linear-gradient(135deg, var(--c1), var(--c2));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.card-pink{--c1:#ff6b35;--c2:#e91e8c;background:rgba(233,30,140,0.08);}
+.card-purple{--c1:#7c4dff;--c2:#00bcd4;background:rgba(124,77,255,0.08);}
+.card-gold{--c1:#ffd700;--c2:#ff6b35;background:rgba(255,215,0,0.08);}
+.card-green{--c1:#00e676;--c2:#00bcd4;background:rgba(0,230,118,0.08);}
+.msg-icon { font-size: 28px; margin-bottom: 8px; }
+.msg-title { font-family:'Dancing Script',cursive; font-size:clamp(20px,5vw,28px); color:#ffd700; margin-bottom:8px; }
+.msg-text { font-size:clamp(14px,3.5vw,16px); color:rgba(255,255,255,0.85); line-height:1.7; }
+
+.color-row { display:flex; gap:10px; justify-content:center; margin:16px 0; flex-wrap:wrap; }
+.color-blob {
+  width:50px; height:50px; border-radius:50%;
+  animation: blobPulse 2s ease-in-out infinite alternate;
+  cursor:pointer; min-width:44px; min-height:44px;
+}
+.color-blob:nth-child(1){background:#ff5252;animation-delay:0s;}
+.color-blob:nth-child(2){background:#ffd700;animation-delay:0.2s;}
+.color-blob:nth-child(3){background:#4caf50;animation-delay:0.4s;}
+.color-blob:nth-child(4){background:#2196f3;animation-delay:0.6s;}
+.color-blob:nth-child(5){background:#e91e8c;animation-delay:0.8s;}
+.color-blob:nth-child(6){background:#9c27b0;animation-delay:1s;}
+@keyframes blobPulse {
+  from{transform:scale(1);box-shadow:0 0 10px currentColor;}
+  to{transform:scale(1.2);box-shadow:0 0 25px currentColor;}
+}
+
+.final-banner {
+  margin:20px 0; padding:24px; border-radius:24px;
+  background:linear-gradient(135deg,rgba(255,107,53,0.15),rgba(233,30,140,0.15),rgba(124,77,255,0.15));
+  border:2px solid rgba(255,215,0,0.4);
+  text-align:center; position:relative; overflow:hidden;
+}
+.final-banner::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,transparent 40%,rgba(255,215,0,0.05) 50%,transparent 60%);
+  animation:sweep 3s infinite;
+}
+@keyframes sweep { from{transform:translateX(-100%) skewX(-10deg);} to{transform:translateX(200%) skewX(-10deg);} }
+.final-wish-text {
+  font-family:'Pacifico',cursive; font-size:clamp(20px,5.5vw,36px);
+  background:linear-gradient(135deg,#ffd700,#ff6b35,#e91e8c,#7c4dff,#00e676);
+  background-size:300% 300%;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  animation:colorFlow 2s ease infinite; line-height:1.4;
+}
+.from-text {
+  font-family:'Dancing Script',cursive; font-size:clamp(16px,4vw,22px);
+  color:rgba(255,255,255,0.6); margin-top:10px;
+}
+.holi-float {
+  position:fixed; font-size:24px; animation:holiFloat linear infinite;
+  pointer-events:none; z-index:0;
+}
+@keyframes holiFloat {
+  0%{transform:translateY(100vh) rotate(0deg) scale(0.5);opacity:0;}
+  10%{opacity:1;} 90%{opacity:1;}
+  100%{transform:translateY(-10vh) rotate(720deg) scale(1.2);opacity:0;}
+}
+.sound-btn {
+  position:fixed; top:16px; right:16px; z-index:100;
+  background:rgba(255,255,255,0.1); border:2px solid rgba(255,255,255,0.3);
+  border-radius:50%; width:52px; height:52px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:22px; backdrop-filter:blur(10px);
+  transition:transform 0.2s;
+}
+.sound-btn:active { transform:scale(0.9); }
+.color-burst {
+  position:fixed; width:80px; height:80px; border-radius:50%;
+  pointer-events:none; transform:translate(-50%,-50%) scale(0);
+  animation:burst 0.6s ease-out forwards; z-index:999;
+}
+@keyframes burst {
+  0%{transform:translate(-50%,-50%) scale(0);opacity:1;}
+  100%{transform:translate(-50%,-50%) scale(5);opacity:0;}
+}
+</style>
+</head>
+<body>
+<canvas id="particleCanvas"></canvas>
+<button class="sound-btn" id="soundBtn" onclick="toggleSound()">🔊</button>
+
+<!-- PAGE 1: SPLASH -->
+<div class="page active" id="page1">
+  <div class="splash-content">
+    <div class="holi-3d-text">HAPPY<br>HOLI</div>
+    <div class="subtitle-3d">Ankku Dii 💕</div>
+    <div class="timer-circle">
+      <span class="timer-num" id="timerNum">3</span>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 2: GATE -->
+<div class="page" id="page2">
+  <div class="gate-scene">
+    <div class="float-flower" style="left:5%;animation-duration:4s;animation-delay:0s;">🌺</div>
+    <div class="float-flower" style="left:20%;animation-duration:5s;animation-delay:0.5s;">🌸</div>
+    <div class="float-flower" style="left:75%;animation-duration:3.5s;animation-delay:1s;">🌼</div>
+    <div class="float-flower" style="left:88%;animation-duration:6s;animation-delay:0.3s;">🌺</div>
+    <div class="float-flower" style="left:50%;animation-duration:4.5s;animation-delay:1.5s;">🌷</div>
+    <div class="gate-frame" id="gateFrame">
+      <div class="gate-top-text">✨ Welcome to Holi ✨</div>
+      <div class="gate-arch"></div>
+      <div class="gate-door-left" id="doorL"><div class="door-design"></div></div>
+      <div class="gate-door-right" id="doorR"><div class="door-design"></div></div>
+      <div class="gate-welcome" id="gateWelcome">
+        <h2>🌈 Come, Celebrate Holi! 🌈</h2>
+        <button class="gate-btn" onclick="goPage3()">Boss darwaza ready h</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3: SISTER WISH -->
+<div class="page" id="page3">
+  <div class="wish-container">
+    <div class="sister-header">
+
+      <!-- DP: Beautiful Holi Girl SVG with rainbow spinning ring -->
+      <div class="dp-wrapper">
+        <div class="dp-ring"></div>
+        <div class="dp-ring-mask"></div>
+        <div class="dp-svg-container">
+          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="bg2" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#3d1a6e"/>
+                <stop offset="100%" stop-color="#0a0020"/>
+              </radialGradient>
+              <radialGradient id="skin" cx="50%" cy="40%" r="60%">
+                <stop offset="0%" stop-color="#f5c18e"/>
+                <stop offset="100%" stop-color="#d4956a"/>
+              </radialGradient>
+            </defs>
+            <!-- BG -->
+            <circle cx="60" cy="60" r="60" fill="url(#bg2)"/>
+            <!-- Color clouds background -->
+            <circle cx="15" cy="25" r="14" fill="#ff525233"/>
+            <circle cx="100" cy="20" r="11" fill="#ffd70033"/>
+            <circle cx="8" cy="78" r="9" fill="#4caf5033"/>
+            <circle cx="108" cy="82" r="10" fill="#2196f333"/>
+            <circle cx="60" cy="4" r="8" fill="#9c27b033"/>
+            <ellipse cx="20" cy="95" rx="18" ry="9" fill="#ff6b3555" transform="rotate(-15 20 95)"/>
+            <ellipse cx="100" cy="98" rx="14" ry="8" fill="#7c4dff55" transform="rotate(10 100 98)"/>
+            <!-- SAREE / BODY -->
+            <ellipse cx="60" cy="104" rx="30" ry="18" fill="#c2185b"/>
+            <ellipse cx="60" cy="104" rx="30" ry="18" fill="none" stroke="#ffd700" stroke-width="1.5" stroke-dasharray="4,2"/>
+            <!-- Gold border dots saree -->
+            <circle cx="40" cy="100" r="1.5" fill="#ffd700"/>
+            <circle cx="50" cy="106" r="1.5" fill="#ffd700"/>
+            <circle cx="60" cy="108" r="1.5" fill="#ffd700"/>
+            <circle cx="70" cy="106" r="1.5" fill="#ffd700"/>
+            <circle cx="80" cy="100" r="1.5" fill="#ffd700"/>
+            <!-- Torso -->
+            <rect x="44" y="68" width="32" height="32" rx="8" fill="#e91e8c"/>
+            <!-- Blouse -->
+            <rect x="44" y="68" width="32" height="13" rx="6" fill="#ad1457"/>
+            <rect x="44" y="68" width="32" height="13" rx="6" fill="none" stroke="#ffd700" stroke-width="1.2"/>
+            <!-- Dupatta -->
+            <path d="M44 72 Q30 65 22 78 Q30 88 44 82Z" fill="#7c4dff" opacity="0.7"/>
+            <path d="M76 72 Q90 65 98 78 Q90 88 76 82Z" fill="#7c4dff" opacity="0.7"/>
+            <!-- Dupatta gold border -->
+            <path d="M44 72 Q30 65 22 78" stroke="#ffd700" stroke-width="1" fill="none"/>
+            <path d="M76 72 Q90 65 98 78" stroke="#ffd700" stroke-width="1" fill="none"/>
+            <!-- Neck -->
+            <ellipse cx="60" cy="67" rx="7" ry="5" fill="url(#skin)"/>
+            <!-- HEAD -->
+            <ellipse cx="60" cy="47" rx="18" ry="20" fill="url(#skin)"/>
+            <!-- HAIR -->
+            <ellipse cx="60" cy="33" rx="19" ry="15" fill="#1a0800"/>
+            <!-- Hair side locks -->
+            <path d="M42 43 Q28 58 30 78" stroke="#1a0800" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <path d="M78 43 Q92 58 90 78" stroke="#1a0800" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <!-- Gulal color in hair -->
+            <path d="M42 35 Q55 27 68 35" stroke="#e91e8c" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.85"/>
+            <path d="M48 29 Q60 23 72 29" stroke="#7c4dff" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+            <path d="M52 25 Q60 21 68 25" stroke="#ffd700" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+            <!-- EYES -->
+            <ellipse cx="52" cy="47" rx="5" ry="5.5" fill="white"/>
+            <ellipse cx="68" cy="47" rx="5" ry="5.5" fill="white"/>
+            <ellipse cx="52.5" cy="48" rx="3.2" ry="3.8" fill="#2c1200"/>
+            <ellipse cx="68.5" cy="48" rx="3.2" ry="3.8" fill="#2c1200"/>
+            <circle cx="51" cy="46.5" r="1.2" fill="white" opacity="0.9"/>
+            <circle cx="67" cy="46.5" r="1.2" fill="white" opacity="0.9"/>
+            <!-- Eyeliner -->
+            <path d="M47 44 Q52 42 57 44" stroke="#1a0800" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M63 44 Q68 42 73 44" stroke="#1a0800" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- Eyebrows -->
+            <path d="M48 41.5 Q52 39.5 56 41" stroke="#3d1f00" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <path d="M64 41 Q68 39.5 72 41.5" stroke="#3d1f00" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <!-- BINDI -->
+            <circle cx="60" cy="40.5" r="3" fill="#e91e8c"/>
+            <circle cx="60" cy="40.5" r="1.4" fill="#ffd700"/>
+            <!-- Bindi tikka chain -->
+            <line x1="60" y1="43.5" x2="60" y2="28" stroke="#ffd700" stroke-width="0.8" opacity="0.8"/>
+            <circle cx="60" cy="27" r="3" fill="#ffd700"/>
+            <circle cx="60" cy="27" r="1.5" fill="#ff6b35"/>
+            <!-- NOSE -->
+            <ellipse cx="60" cy="53" rx="3" ry="2.2" fill="#d4956a"/>
+            <!-- Nose ring -->
+            <circle cx="57.5" cy="53" r="2" fill="none" stroke="#ffd700" stroke-width="1.2"/>
+            <circle cx="56.5" cy="54" r="1" fill="#ffd700"/>
+            <!-- LIPS -->
+            <path d="M53 58.5 Q57 61 60 59.5 Q63 61 67 58.5" stroke="#c2185b" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <path d="M53 58.5 Q57 57 60 57.8 Q63 57 67 58.5" stroke="#f06292" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- Cheek blush + holi color -->
+            <circle cx="45" cy="54" r="6" fill="#ff8a9a" opacity="0.3"/>
+            <circle cx="75" cy="54" r="6" fill="#ff8a9a" opacity="0.3"/>
+            <circle cx="75" cy="52" r="4.5" fill="#ffd700" opacity="0.25"/>
+            <circle cx="44" cy="53" r="4" fill="#4caf50" opacity="0.25"/>
+            <!-- EARRINGS -->
+            <circle cx="41" cy="52" r="3.5" fill="#ffd700"/>
+            <circle cx="41" cy="52" r="2" fill="#e91e8c"/>
+            <circle cx="79" cy="52" r="3.5" fill="#ffd700"/>
+            <circle cx="79" cy="52" r="2" fill="#e91e8c"/>
+            <!-- Jhumka dangle -->
+            <line x1="41" y1="55.5" x2="41" y2="61" stroke="#ffd700" stroke-width="1"/>
+            <circle cx="41" cy="63" r="3" fill="#ffd700"/>
+            <line x1="79" y1="55.5" x2="79" y2="61" stroke="#ffd700" stroke-width="1"/>
+            <circle cx="79" cy="63" r="3" fill="#ffd700"/>
+            <!-- NECKLACE -->
+            <path d="M50 64 Q60 70 70 64" stroke="#ffd700" stroke-width="1.8" fill="none"/>
+            <circle cx="55" cy="67" r="2" fill="#ffd700"/>
+            <circle cx="60" cy="69" r="2.5" fill="#ffd700"/>
+            <circle cx="65" cy="67" r="2" fill="#ffd700"/>
+            <circle cx="60" cy="69" r="1.2" fill="#e91e8c"/>
+            <!-- ARMS -->
+            <!-- Left arm with red gulal plate -->
+            <path d="M44 76 Q28 82 22 93" stroke="#d4956a" stroke-width="11" fill="none" stroke-linecap="round"/>
+            <circle cx="20" cy="95" r="12" fill="#e53935" opacity="0.9"/>
+            <circle cx="20" cy="95" r="7" fill="#ff8a80"/>
+            <circle cx="20" cy="95" r="3" fill="#fff" opacity="0.5"/>
+            <!-- Right arm with purple gulal -->
+            <path d="M76 76 Q92 82 98 93" stroke="#d4956a" stroke-width="11" fill="none" stroke-linecap="round"/>
+            <circle cx="100" cy="95" r="12" fill="#7c4dff" opacity="0.9"/>
+            <circle cx="100" cy="95" r="7" fill="#b39ddb"/>
+            <circle cx="100" cy="95" r="3" fill="#fff" opacity="0.5"/>
+            <!-- BANGLES left -->
+            <circle cx="30" cy="86" r="6" fill="none" stroke="#ffd700" stroke-width="2.5"/>
+            <circle cx="27" cy="89.5" r="5.5" fill="none" stroke="#e91e8c" stroke-width="2"/>
+            <circle cx="33" cy="89.5" r="5.5" fill="none" stroke="#4caf50" stroke-width="2"/>
+            <!-- BANGLES right -->
+            <circle cx="90" cy="86" r="6" fill="none" stroke="#ffd700" stroke-width="2.5"/>
+            <circle cx="87" cy="89.5" r="5.5" fill="none" stroke="#e91e8c" stroke-width="2"/>
+            <circle cx="93" cy="89.5" r="5.5" fill="none" stroke="#2196f3" stroke-width="2"/>
+            <!-- Color splashes from hands -->
+            <circle cx="12" cy="90" r="4.5" fill="#ff525299"/>
+            <circle cx="8" cy="97" r="3.5" fill="#ffd70099"/>
+            <circle cx="18" cy="103" r="4" fill="#e91e8c99"/>
+            <circle cx="108" cy="90" r="4.5" fill="#7c4dff99"/>
+            <circle cx="112" cy="97" r="3.5" fill="#00bcd499"/>
+            <circle cx="103" cy="103" r="4" fill="#4caf5099"/>
+            <!-- Flowers in hair -->
+            <circle cx="41" cy="37" r="5.5" fill="#ff6b35" opacity="0.95"/>
+            <circle cx="41" cy="37" r="2.8" fill="#ffd700"/>
+            <circle cx="79" cy="35" r="4.5" fill="#e91e8c" opacity="0.95"/>
+            <circle cx="79" cy="35" r="2.2" fill="#ffd700"/>
+            <circle cx="60" cy="20" r="4" fill="#ff5252" opacity="0.8"/>
+            <circle cx="60" cy="20" r="2" fill="#fff"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="dii-title">Ankku Dii</div>
+      <div class="dii-subtitle">My Lovely Sister </div>
+      <!-- Dhol Beat Visualizer bars -->
+      <div class="dhol-visualizer" id="dholViz">
+        <div class="dhol-bar"></div>
+        <div class="dhol-bar"></div>
+        <div class="dhol-bar"></div>
+        <div class="dhol-bar"></div>
+        <div class="dhol-bar"></div>
+      </div>
+      <div class="dhol-label">🥁 DHOL BEATS 🥁</div>
+    </div>
+
+    <div class="color-row">
+      <div class="color-blob" onclick="throwColor(event,'#ff5252')"></div>
+      <div class="color-blob" onclick="throwColor(event,'#ffd700')"></div>
+      <div class="color-blob" onclick="throwColor(event,'#4caf50')"></div>
+      <div class="color-blob" onclick="throwColor(event,'#2196f3')"></div>
+      <div class="color-blob" onclick="throwColor(event,'#e91e8c')"></div>
+      <div class="color-blob" onclick="throwColor(event,'#9c27b0')"></div>
+    </div>
+
+    <div class="msg-card card-pink">
+      <div class="msg-icon">❤️</div>
+      <div class="msg-title">My Dearest Dii</div>
+      <div class="msg-text">You are the rainbow in my sky — every color of your life brings joy, warmth, and beauty. On this Holi, I wish your life stays as vibrant and colorful as the festival itself. 🌈</div>
+    </div>
+    <div class="msg-card card-purple">
+      <div class="msg-icon">🙏</div>
+      <div class="msg-title">Touching Your Feet</div>
+      <div class="msg-text">Dii, your guidance has always been my strength. Like the elders say — a sister's love is the most sacred bond. I bow to your love with full respect and gratitude. ✨</div>
+    </div>
+    <div class="msg-card card-gold">
+      <div class="msg-icon">🌸</div>
+      <div class="msg-title">A Prayer for You</div>
+      <div class="msg-text">May every wish of yours bloom like flowers of spring. May happiness shower on you like gulal, and every day of your life be a festival. You deserve all the good things! 🌺</div>
+    </div>
+    <div class="msg-card card-green">
+      <div class="msg-icon">🎊</div>
+      <div class="msg-title">Holi Mubarak!</div>
+      <div class="msg-text">Didi, you've painted my life with your love! Today on Holi, I want to say — you are my hero, my protector, my best friend. Thank you for always being there. Rang barse! 🎨</div>
+    </div>
+
+    <div class="final-banner">
+      <div class="final-wish-text">🌈 Happy Holi Ankku Dii! 🌈<br>Rang De Basanti 🌟</div>
+      <div class="from-text">— With all my love &amp; respect 💕</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== DHOL AUDIO ENGINE ==========
+const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+let soundOn = true;
+let bgGainNode = null;
+
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new AudioCtxClass();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  playBgDrone();
+  startDholPattern();
+}
+
+// --- DHOL HIT FUNCTIONS ---
+function dholDHA(t) {
+  if (!audioCtx || !soundOn) return;
+  // Deep bass thud
+  let o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(110, t);
+  o.frequency.exponentialRampToValueAtTime(45, t + 0.18);
+  g.gain.setValueAtTime(1.0, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(t); o.stop(t + 0.42);
+  // Skin snap noise
+  dholNoise(t, 180, 1.5, 0.5, 0.14);
+}
+
+function dholTI(t) {
+  if (!audioCtx || !soundOn) return;
+  let o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = 'triangle';
+  o.frequency.setValueAtTime(280, t);
+  o.frequency.exponentialRampToValueAtTime(130, t + 0.1);
+  g.gain.setValueAtTime(0.7, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(t); o.stop(t + 0.25);
+  dholNoise(t, 450, 2.5, 0.35, 0.08);
+}
+
+function dholGE(t) {
+  if (!audioCtx || !soundOn) return;
+  let o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(75, t);
+  o.frequency.exponentialRampToValueAtTime(35, t + 0.28);
+  g.gain.setValueAtTime(0.85, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(t); o.stop(t + 0.55);
+}
+
+function dholKA(t) {
+  if (!audioCtx || !soundOn) return;
+  dholNoise(t, 650, 4, 0.25, 0.06);
+}
+
+function dholNoise(t, freq, Q, gain, dur) {
+  if (!audioCtx) return;
+  const sz = Math.floor(audioCtx.sampleRate * dur);
+  const buf = audioCtx.createBuffer(1, sz, audioCtx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < sz; i++) d[i] = (Math.random() * 2 - 1) * (1 - i/sz);
+  const src = audioCtx.createBufferSource();
+  src.buffer = buf;
+  const f = audioCtx.createBiquadFilter();
+  f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = Q;
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(gain, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  src.connect(f); f.connect(g); g.connect(audioCtx.destination);
+  src.start(t); src.stop(t + dur + 0.01);
+}
+
+// Classic Bhangra/Holi Dhol pattern: DHA GE TI | DHA DHA GE | TI KA TI | DHA
+function startDholPattern() {
+  if (!audioCtx) return;
+  const BPM = 138;
+  const s16 = 60 / BPM / 4; // 16th note seconds
+  let t = audioCtx.currentTime + 0.1;
+
+  // Pattern: 16 steps per bar
+  // Beats: DHA=0, GE=2, TI=3, DHA=4, DHA=5, GE=6, TI=8, KA=9, TI=10, DHA=12, TI=14
+  const pattern = [
+    {fn:dholDHA,s:0}, {fn:dholGE,s:2}, {fn:dholTI,s:3},
+    {fn:dholDHA,s:4}, {fn:dholDHA,s:5}, {fn:dholGE,s:6},
+    {fn:dholTI,s:8}, {fn:dholKA,s:9}, {fn:dholTI,s:10},
+    {fn:dholDHA,s:12}, {fn:dholTI,s:14}
+  ];
+  const barLen = s16 * 16;
+
+  // Visual beat sync
+  const strongBeats = [0, 4, 8, 12];
+
+  function schedBar() {
+    if (!soundOn) { setTimeout(schedBar, 200); return; }
+    pattern.forEach(({fn,s}) => fn(t + s * s16));
+    // Schedule visual pulses
+    strongBeats.forEach(s => {
+      const delay = (t + s * s16 - audioCtx.currentTime) * 1000;
+      if (delay > 0) setTimeout(() => { if(soundOn) triggerBeatVisual(); }, delay);
+    });
+    t += barLen;
+    setTimeout(schedBar, (barLen - 0.05) * 1000);
+  }
+  schedBar();
+}
+
+function playBgDrone() {
+  if (!audioCtx) return;
+  bgGainNode = audioCtx.createGain();
+  bgGainNode.gain.value = 0.04;
+  bgGainNode.connect(audioCtx.destination);
+  [130, 196, 260].forEach(freq => {
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'sawtooth'; o.frequency.value = freq;
+    g.gain.value = 0.012;
+    o.connect(g); g.connect(bgGainNode);
+    o.start();
+  });
+}
+
+function triggerBeatVisual() {
+  const v = document.getElementById('dholViz');
+  if (!v) return;
+  v.style.transform = 'scale(1.18)';
+  v.style.transition = 'transform 0.07s';
+  setTimeout(() => { v.style.transform = 'scale(1)'; v.style.transition = 'transform 0.15s'; }, 70);
+}
+
+function toggleSound() {
+  soundOn = !soundOn;
+  document.getElementById('soundBtn').textContent = soundOn ? '🔊' : '🔇';
+  const v = document.getElementById('dholViz');
+  if (v) v.classList.toggle('paused', !soundOn);
+  if (bgGainNode) bgGainNode.gain.setValueAtTime(soundOn ? 0.04 : 0, audioCtx.currentTime);
+}
+
+function playBurst() {
+  if (!audioCtx || !soundOn) return;
+  dholDHA(audioCtx.currentTime);
+  dholTI(audioCtx.currentTime + 0.09);
+}
+
+function playGateOpen() {
+  if (!audioCtx || !soundOn) return;
+  [262,330,392,523,659].forEach((f,i) => {
+    const t2 = audioCtx.currentTime + i * 0.12;
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0, t2);
+    g.gain.linearRampToValueAtTime(0.25, t2 + 0.05);
+    g.gain.exponentialRampToValueAtTime(0.001, t2 + 0.65);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(t2); o.stop(t2 + 0.7);
+  });
+  // Dhol flourish
+  setTimeout(() => {
+    if (audioCtx && soundOn) {
+      const now = audioCtx.currentTime;
+      dholDHA(now); dholTI(now+0.1); dholDHA(now+0.18);
+      dholDHA(now+0.24); dholTI(now+0.3);
+    }
+  }, 500);
+}
+
+// ========== PARTICLES ==========
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [], currentPage = 1;
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+const COLORS = ['#ff5252','#ffd700','#4caf50','#2196f3','#e91e8c','#9c27b0','#ff6b35','#00e676','#00bcd4','#ff4081'];
+
+class Particle {
+  constructor(x, y, color) {
+    this.x = x ?? Math.random() * canvas.width;
+    this.y = y ?? canvas.height + 20;
+    this.color = color ?? COLORS[Math.floor(Math.random() * COLORS.length)];
+    this.r = Math.random() * 8 + 3;
+    this.vx = (Math.random() - 0.5) * 3;
+    this.vy = -(Math.random() * 4 + 2);
+    this.alpha = 1; this.gravity = 0.05;
+    this.life = 1; this.decay = Math.random() * 0.008 + 0.005;
+  }
+  update() { this.x += this.vx; this.vy += this.gravity; this.y += this.vy; this.life -= this.decay; this.alpha = this.life; }
+  draw() {
+    ctx.globalAlpha = this.alpha;
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.shadowBlur = 15; ctx.shadowColor = this.color;
+    ctx.fill(); ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+  }
+}
+
+function spawnParticles() {
+  const count = currentPage === 1 ? 3 : currentPage === 3 ? 5 : 2;
+  for (let i = 0; i < count; i++) particles.push(new Particle());
+}
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  spawnParticles();
+  particles = particles.filter(p => p.life > 0);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animate);
+}
+animate();
+
+function throwColor(e, color) {
+  initAudio(); playBurst();
+  const r = e.target.getBoundingClientRect();
+  const x = r.left + r.width/2, y = r.top + r.height/2;
+  const b = document.createElement('div');
+  b.className = 'color-burst';
+  b.style.cssText = `left:${x}px;top:${y}px;background:${color};opacity:0.6;`;
+  document.body.appendChild(b); setTimeout(() => b.remove(), 600);
+  for (let i = 0; i < 25; i++) {
+    const p = new Particle(x, y, color);
+    p.vx = (Math.random()-0.5)*12; p.vy = (Math.random()-0.5)*12;
+    p.gravity = 0.1; p.decay = 0.02; particles.push(p);
+  }
+}
+
+function tapBurst(clientX, clientY) {
+  initAudio();
+  const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+  for (let i = 0; i < 12; i++) {
+    const p = new Particle(clientX, clientY, color);
+    p.vx = (Math.random()-0.5)*8; p.vy = (Math.random()-0.5)*8;
+    p.gravity = 0.12; p.r = Math.random()*6+2; p.decay = 0.025; particles.push(p);
+  }
+}
+
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.gate-btn,.color-blob,.sound-btn')) return;
+  tapBurst(e.clientX, e.clientY);
+});
+document.addEventListener('touchstart', (e) => {
+  if (e.target.closest('.gate-btn,.color-blob,.sound-btn')) return;
+  tapBurst(e.touches[0].clientX, e.touches[0].clientY);
+}, { passive: true });
+
+// ========== NAVIGATION ==========
+let timerVal = 3;
+const timerEl = document.getElementById('timerNum');
+const ti = setInterval(() => {
+  timerVal--;
+  if (timerVal <= 0) { clearInterval(ti); timerEl.textContent = '🌈'; setTimeout(goPage2, 600); }
+  else timerEl.textContent = timerVal;
+}, 1000);
+
+function goPage2() {
+  document.getElementById('page1').classList.remove('active');
+  document.getElementById('page2').classList.add('active');
+  currentPage = 2;
+  setTimeout(() => {
+    initAudio(); playGateOpen();
+    document.getElementById('doorL').classList.add('open');
+    document.getElementById('doorR').classList.add('open');
+    document.getElementById('gateWelcome').classList.add('show');
+    for (let i = 0; i < 60; i++) {
+      const p = new Particle(window.innerWidth/2, window.innerHeight/2, COLORS[Math.floor(Math.random()*COLORS.length)]);
+      p.vx=(Math.random()-0.5)*12; p.vy=(Math.random()-0.5)*12; p.r=Math.random()*10+4; p.decay=0.015; particles.push(p);
+    }
+  }, 1500);
+}
+
+function goPage3() {
+  initAudio();
+  document.getElementById('page2').classList.remove('active');
+  const p3 = document.getElementById('page3');
+  p3.classList.add('active'); currentPage = 3;
+  ['🌸','🌺','🎨','🌈','🎊','🌼','💖','✨','🌷','🎉'].forEach(em => {
+    const el = document.createElement('div');
+    el.className = 'holi-float'; el.textContent = em;
+    el.style.cssText = `left:${Math.random()*95}%;animation-duration:${4+Math.random()*4}s;animation-delay:${Math.random()*3}s;`;
+    p3.appendChild(el);
+  });
+  for (let i = 0; i < 100; i++) {
+    const p = new Particle(Math.random()*canvas.width, canvas.height/2, COLORS[Math.floor(Math.random()*COLORS.length)]);
+    p.vx=(Math.random()-0.5)*15; p.vy=-(Math.random()*12+3); p.r=Math.random()*12+4; p.decay=0.012; particles.push(p);
+  }
+}
+
+// Powder rings
+['rgba(255,82,82,0.3)','rgba(255,215,0,0.3)','rgba(76,175,80,0.3)','rgba(233,30,140,0.3)'].forEach((c,i) => {
+  const r = document.createElement('div');
+  r.className = 'powder-ring';
+  r.style.cssText = `width:200px;height:200px;background:${c};left:calc(50% - 100px);top:calc(50% - 100px);animation-delay:${i*0.8}s;animation-duration:${2.5+i*0.3}s;`;
+  document.getElementById('page1').appendChild(r);
+});
+</script>
+</body>
+</html>
